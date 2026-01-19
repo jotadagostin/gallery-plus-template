@@ -65,7 +65,7 @@ export default function PhotoWidget({ photo, loading }: PhotoWidgetProps) {
             variant: "secondary",
             className: "px-2 py-2",
           })}
-          to={`/fotos/${photo.id}`}
+          to={`/photos/${photo.id}`}
         >
           <Text
             className={buttonTextVariants({ variant: "secondary", size: "sm" })}

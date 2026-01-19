@@ -14,17 +14,18 @@ export default function PhotosList({ photos, loading }: PhotosListProps) {
       <Text
         as="div"
         variant="paragraph-large"
-        className="flex items-center justify-end text-accent-spans gap-1"
+        className="flex items-center justify-end gap-1 text-accent-span"
       >
-        Total: {""}
+        Total:{" "}
         {!loading ? (
           <div>{photos.length}</div>
         ) : (
           <Skeleton className="w-6 h-6" />
         )}
       </Text>
-      {!loading && length > 0 && (
-        <div className="grid grid-cols-5 gap-4">
+
+      {!loading && photos.length > 0 && (
+        <div className="grid grid-cols-5 gap-9">
           {photos.map((photo) => (
             <PhotoWidget photo={photo} key={photo.id} />
           ))}
@@ -35,13 +36,12 @@ export default function PhotosList({ photos, loading }: PhotosListProps) {
           {Array.from({ length: 10 }).map((_, index) => (
             <PhotoWidget
               key={`photo-loading-${index}`}
-              photo={{} as Photo}
               loading
+              photo={{} as Photo}
             />
           ))}
         </div>
       )}
-
       {!loading && photos.length === 0 && (
         <div className="flex justify-center items-center h-full">
           <Text variant="paragraph-large">Any photo founded</Text>

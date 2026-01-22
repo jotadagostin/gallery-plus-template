@@ -1,8 +1,9 @@
 import Button from "../../../components/button";
 import Skeleton from "../../../components/skeleton";
 import Text from "../../../components/text";
-import type { Album } from "../models/album";
 import cx from "classnames";
+import type { Album } from "../models/album";
+import usePhotos from "../../photos/hooks/use-photo";
 
 interface AlbumsFilterProps extends React.ComponentProps<"div"> {
   albums: Album[];
@@ -15,36 +16,40 @@ export default function AlbumsFilter({
   className,
   ...props
 }: AlbumsFilterProps) {
+  const { filters } = usePhotos();
+
   return (
     <div
       className={cx("flex items-center gap-3.5 overflow-x-auto", className)}
       {...props}
     >
-      <Text variant="heading-small">Albums</Text>
+      <Text variant="heading-small">Álbuns</Text>
       <div className="flex gap-3">
         {!loading ? (
           <>
-            <Button className="cursor-pointer" variant="primary" size="sm">
-              All
+            <Button
+              size="sm"
+              className="cursor-pointer"
+              variant={filters.albumId === null ? "primary" : "ghost"}
+              onClick={() => filters.setAlbumId(null)}
+            >
+              Todos
             </Button>
-            {!loading &&
-              albums.map((album) => (
-                <Button
-                  key={album.id}
-                  variant="ghost"
-                  size="sm"
-                  className="cursor-pointer"
-                >
-                  {album.title}
-                </Button>
-              ))}
+            {albums.map((album) => (
+              <Button
+                key={album.id}
+                size="sm"
+                className="cursor-pointer"
+                variant={filters.albumId === album.id ? "primary" : "ghost"}
+                onClick={() => filters.setAlbumId(album.id)}
+              >
+                {album.title}
+              </Button>
+            ))}
           </>
         ) : (
           Array.from({ length: 5 }).map((_, index) => (
-            <Skeleton
-              key={`album-button-loading-${index}`}
-              className="w-28 h-7"
-            />
+            <Skeleton className="w-28 h-7" key={`album-loading-${index}`} />
           ))
         )}
       </div>

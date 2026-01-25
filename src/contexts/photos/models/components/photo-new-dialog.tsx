@@ -30,6 +30,9 @@ export default function PhotoNewDialog({ trigger }: PhotoNewDialogProps) {
   });
   const { albums, isLoadingAlbums } = useAlbums();
 
+  const file = form.watch("file");
+  const fileSource = file?.[0] ? URL.createObjectURL(file[0]) : undefined;
+
   function handleSubmit(payload: PhotoNewFormSchema) {
     console.log(payload);
   }
@@ -64,6 +67,7 @@ export default function PhotoNewDialog({ trigger }: PhotoNewDialogProps) {
                 <ImagePreview
                   className="w-full h-56"
                   imageClassName="w-full h-56"
+                  src={fileSource}
                 />
               }
               error={form.formState.errors.file?.message}

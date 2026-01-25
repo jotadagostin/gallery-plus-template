@@ -17,73 +17,91 @@ import Text from "../../../../components/text";
 import Skeleton from "../../../../components/skeleton";
 import { useForm } from "react-hook-form";
 import useAlbums from "../../../albums/hooks/use-albums";
+import { photoNewFormSchema, type PhotoNewFormSchema } from "../../schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 interface PhotoNewDialogProps {
   trigger: React.ReactNode;
 }
 
 export default function PhotoNewDialog({ trigger }: PhotoNewDialogProps) {
-  const form = useForm();
+  const form = useForm<PhotoNewFormSchema>({
+    resolver: zodResolver(photoNewFormSchema),
+  });
   const { albums, isLoadingAlbums } = useAlbums();
+
+  function handleSubmit(payload: PhotoNewFormSchema) {
+    console.log(payload);
+  }
 
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
+
       <DialogContent>
-        <DialogHeader>Add Photo</DialogHeader>
+        <form onSubmit={form.handleSubmit(handleSubmit)}>
+          <DialogHeader>Add Photo</DialogHeader>
 
-        <DialogBody className="flex flex-col gap-5">
-          <InputText placeholder="add a tittle" maxLength={255} />
+          <DialogBody className="flex flex-col gap-5">
+            <InputText
+              placeholder="add a tittle"
+              maxLength={255}
+              error={form.formState.errors.title?.message}
+              {...form.register("title")}
+            />
 
-          <Alert>
-            Max sice: 50mb
-            <br />
-            You can select files in PNG, JPG and JPEG
-          </Alert>
+            <Alert>
+              Max sice: 50mb
+              <br />
+              You can select files in PNG, JPG and JPEG
+            </Alert>
 
-          <InputSingleFile
-            form={form}
-            allowedExtensions={["png", "jpg", "jpeg"]}
-            maxFIleSizeInMB={50}
-            replaceBy={
-              <ImagePreview
-                className="w-full h-56"
-                imageClassName="w-full h-56"
-              />
-            }
-          />
+            <InputSingleFile
+              form={form}
+              allowedExtensions={["png", "jpg", "jpeg"]}
+              maxFIleSizeInMB={50}
+              replaceBy={
+                <ImagePreview
+                  className="w-full h-56"
+                  imageClassName="w-full h-56"
+                />
+              }
+              error={form.formState.errors.file?.message}
+              {...form.register("file")}
+            />
 
-          <div className="space-y-3">
-            <Text variant="label-small">Select Albums</Text>
-            <div className="flex flex-wrap gap-3">
-              {!isLoadingAlbums &&
-                albums.length > 0 &&
-                albums.map((album) => (
-                  <Button
-                    key={album.id}
-                    variant="ghost"
-                    size="sm"
-                    className="truncate"
-                  >
-                    {album.title}
-                  </Button>
-                ))}
-              {isLoadingAlbums &&
-                Array.from({ length: 5 }).map((_, index) => (
-                  <Skeleton
-                    className="h-7 w-20"
-                    key={`album-loading-${index}`}
-                  />
-                ))}
+            <div className="space-y-3">
+              <Text variant="label-small">Select Albums</Text>
+              <div className="flex flex-wrap gap-3">
+                {!isLoadingAlbums &&
+                  albums.length > 0 &&
+                  albums.map((album) => (
+                    <Button
+                      key={album.id}
+                      variant="ghost"
+                      size="sm"
+                      className="truncate"
+                    >
+                      {album.title}
+                    </Button>
+                  ))}
+                {isLoadingAlbums &&
+                  Array.from({ length: 5 }).map((_, index) => (
+                    <Skeleton
+                      className="h-7 w-20"
+                      key={`album-loading-${index}`}
+                    />
+                  ))}
+              </div>
             </div>
-          </div>
-        </DialogBody>
-        <DialogFooter>
-          <DialogClose asChild>
-            <Button variant="secondary">Cancel</Button>
-          </DialogClose>
-          <Button>Add</Button>
-        </DialogFooter>
+          </DialogBody>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button variant="secondary">Cancel</Button>
+            </DialogClose>
+            <Button type="submit">Add</Button>
+          </DialogFooter>
+        </form>
       </DialogContent>
     </Dialog>
   );

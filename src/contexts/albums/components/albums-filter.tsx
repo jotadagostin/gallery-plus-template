@@ -3,7 +3,7 @@ import Skeleton from "../../../components/skeleton";
 import Text from "../../../components/text";
 import cx from "classnames";
 import type { Album } from "../models/album";
-import usePhotos from "../../photos/hooks/use-photo";
+import usePhotos from "../../photos/hooks/use-photos";
 
 interface AlbumsFilterProps extends React.ComponentProps<"div"> {
   albums: Album[];

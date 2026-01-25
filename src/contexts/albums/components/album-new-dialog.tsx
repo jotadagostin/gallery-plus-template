@@ -15,7 +15,7 @@ import SelectCheckboxIlustration from "../../../assets/images/select-checkbox.sv
 
 import Skeleton from "../../../components/skeleton";
 import PhotoImageSelectable from "../../photos/models/components/photo-image-selectable";
-import usePhotos from "../../photos/hooks/use-photo";
+import usePhotos from "../../photos/hooks/use-photos";
 
 interface AlbumNewDialogProps {
   trigger: React.ReactNode;

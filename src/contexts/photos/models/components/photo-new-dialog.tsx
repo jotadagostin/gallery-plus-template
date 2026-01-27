@@ -1,4 +1,4 @@
-import type React from "react";
+import React from "react";
 import {
   Dialog,
   DialogBody,
@@ -25,6 +25,7 @@ interface PhotoNewDialogProps {
 }
 
 export default function PhotoNewDialog({ trigger }: PhotoNewDialogProps) {
+  const [modalOpen, setModalOpen] = React.useState(false);
   const form = useForm<PhotoNewFormSchema>({
     resolver: zodResolver(photoNewFormSchema),
   });
@@ -33,12 +34,33 @@ export default function PhotoNewDialog({ trigger }: PhotoNewDialogProps) {
   const file = form.watch("file");
   const fileSource = file?.[0] ? URL.createObjectURL(file[0]) : undefined;
 
+  const albumsIds = form.watch("albumIds");
+
+  React.useEffect(() => {
+    if (!modalOpen) {
+      form.reset();
+    }
+  }, [modalOpen, form]);
+
+  function handleToggleAlbum(albumId: string) {
+    const albumsIds = form.getValues("albumIds");
+    const albumsSet = new Set(albumsIds);
+
+    if (albumsSet.has(albumId)) {
+      albumsSet.delete(albumId);
+    } else {
+      albumsSet.add(albumId);
+    }
+
+    form.setValue("albumIds", Array.from(albumsSet));
+  }
+
   function handleSubmit(payload: PhotoNewFormSchema) {
     console.log(payload);
   }
 
   return (
-    <Dialog>
+    <Dialog open={modalOpen} onOpenChange={setModalOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
 
       <DialogContent>
@@ -82,9 +104,12 @@ export default function PhotoNewDialog({ trigger }: PhotoNewDialogProps) {
                   albums.map((album) => (
                     <Button
                       key={album.id}
-                      variant="ghost"
+                      variant={
+                        albumsIds?.includes(album.id) ? "primary" : "ghost"
+                      }
                       size="sm"
                       className="truncate"
+                      onClick={() => handleToggleAlbum(album.id)}
                     >
                       {album.title}
                     </Button>

@@ -54,7 +54,7 @@ export default function AlbumListSelectable({
       {loading &&
         Array.from({ length: 5 }).map((_, index) => (
           <li key={`albums-list-${index}`}>
-            <Skeleton className="h-[2.5rem]" />
+            <Skeleton className="h-10" />
           </li>
         ))}
     </ul>

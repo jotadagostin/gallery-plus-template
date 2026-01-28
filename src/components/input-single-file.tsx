@@ -38,7 +38,8 @@ export const inputSingleFileIconVariants = tv({
 });
 
 interface InputSingleFileProps
-  extends VariantProps<typeof inputSingleFileVariants>,
+  extends
+    VariantProps<typeof inputSingleFileVariants>,
     Omit<React.ComponentProps<"input">, "size"> {
   //eslint-disable-next-line @typescript-eslint/no-explicit-any
   form: any;
@@ -61,7 +62,7 @@ export default function InputSingleFile({
   const name = props.name || "";
   const formFile: File = React.useMemo(
     () => formValues[name]?.[0],
-    [formValues, name]
+    [formValues, name],
   );
 
   const { fileExtension, fileSize } = React.useMemo(
@@ -69,7 +70,7 @@ export default function InputSingleFile({
       fileExtension: formFile?.name?.split(".")?.pop()?.toLowerCase() || "",
       fileSize: formFile?.size || 0,
     }),
-    [formFile]
+    [formFile],
   );
 
   function isValidExtension() {
@@ -91,6 +92,7 @@ export default function InputSingleFile({
           <div className="w-full relative group cursor-pointer">
             <input
               type="file"
+              name={name}
               className={`
             absolute top-0 right-0 w-full h-full
             opacity-0 cursor-pointer

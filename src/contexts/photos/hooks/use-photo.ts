@@ -46,9 +46,9 @@ export default function usePhoto(id?: string) {
 
       queryClient.invalidateQueries({ queryKey: ["photos"] });
 
-      toast.success("Foto crida com sucesso");
+      toast.success("Photo created with sucesss");
     } catch (error) {
-      toast.success("Erro ao criar foto");
+      toast.success("Error photo created");
       throw error;
     }
   }

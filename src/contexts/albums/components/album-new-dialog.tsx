@@ -19,6 +19,7 @@ import usePhotos from "../../photos/hooks/use-photos";
 import { albumNewFormSchema } from "../schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import useAlbum from "../hooks/use-album";
 
 interface AlbumNewDialogProps {
   trigger: React.ReactNode;
@@ -30,6 +31,8 @@ export default function AlbumNewDialog({ trigger }: AlbumNewDialogProps) {
     resolver: zodResolver(albumNewFormSchema),
   });
   const { photos, isLoadingPhotos } = usePhotos();
+  const { createAlbum } = useAlbum();
+  const [isCreatingAlbum, setIsCreatingAlbum] = React.useTransition();
 
   React.useEffect(() => {
     if (!modalOpen) {
@@ -38,11 +41,23 @@ export default function AlbumNewDialog({ trigger }: AlbumNewDialogProps) {
   }, [form, modalOpen]);
 
   function handleTogglePhoto(selected: boolean, photoId: string) {
-    console.log(selected, photoId);
+    const photosIds = form.getValues("photoIds") || [];
+    let newValue = [];
+
+    if (selected) {
+      newValue = [...photosIds, photoId];
+    } else {
+      newValue = photosIds.filter((id) => id !== photoId);
+    }
+
+    form.setValue("photoIds", newValue);
   }
 
   function handleSubmit(payload: albumNewFormSchema) {
-    console.log(payload);
+    setIsCreatingAlbum(async () => {
+      await createAlbum(payload);
+      setModalOpen(false);
+    });
   }
 
   return (
@@ -102,9 +117,17 @@ export default function AlbumNewDialog({ trigger }: AlbumNewDialogProps) {
           </DialogBody>
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="secondary">Cancel</Button>
+              <Button variant="secondary" disabled={isCreatingAlbum}>
+                Cancel
+              </Button>
             </DialogClose>
-            <Button type="submit">Create</Button>
+            <Button
+              type="submit"
+              disabled={isCreatingAlbum}
+              handling={isCreatingAlbum}
+            >
+              {isCreatingAlbum ? "Creating..." : "Create"}
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

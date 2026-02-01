@@ -14,9 +14,9 @@ export default function usePhotoAlbums() {
       queryClient.invalidateQueries({ queryKey: ["photo", photoId] });
       queryClient.invalidateQueries({ queryKey: ["photos"] });
 
-      toast.success("Álbuns atualizados");
+      toast.success("Albums updated");
     } catch (error) {
-      toast.error("Erro ao gerenciar álbuns da foto");
+      toast.error("Error managment photo album");
       throw error;
     }
   }

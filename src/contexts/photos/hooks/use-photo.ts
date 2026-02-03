@@ -57,11 +57,11 @@ export default function usePhoto(id?: string) {
     try {
       await api.delete(`/photos/${photoId}`);
 
-      toast.success("Foto excluída com sucesso");
+      toast.success("Photo deleted with success");
 
       navigate("/");
     } catch (error) {
-      toast.error("Erro ao excluir foto");
+      toast.error("Error trying to delete photos");
       throw error;
     }
   }

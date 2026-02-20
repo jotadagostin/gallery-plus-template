@@ -1,9 +1,12 @@
 import Button from "../../../components/button";
+import ButtonIcon from "../../../components/button-icon";
 import Skeleton from "../../../components/skeleton";
 import Text from "../../../components/text";
 import cx from "classnames";
 import type { Album } from "../models/album";
 import usePhotos from "../../photos/hooks/use-photos";
+import AlbumDeleteDialog from "./album-delete-dialog";
+import XIcon from "../../../assets/icons/x.svg?react";
 
 interface AlbumsFilterProps extends React.ComponentProps<"div"> {
   albums: Album[];
@@ -36,15 +39,26 @@ export default function AlbumsFilter({
               Todos
             </Button>
             {albums.map((album) => (
-              <Button
-                key={album.id}
-                size="sm"
-                className="cursor-pointer"
-                variant={filters.albumId === album.id ? "primary" : "ghost"}
-                onClick={() => filters.setAlbumId(album.id)}
-              >
-                {album.title}
-              </Button>
+              <div key={album.id} className="flex items-center">
+                <Button
+                  size="sm"
+                  className="cursor-pointer"
+                  variant={filters.albumId === album.id ? "primary" : "ghost"}
+                  onClick={() => filters.setAlbumId(album.id)}
+                >
+                  {album.title}
+                </Button>
+                <AlbumDeleteDialog
+                  album={album}
+                  trigger={
+                    <ButtonIcon
+                      className="h-6 w-6 ml-1"
+                      variant="ghost"
+                      icon={XIcon}
+                    />
+                  }
+                />
+              </div>
             ))}
           </>
         ) : (
